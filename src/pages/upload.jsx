@@ -4,7 +4,11 @@ import { useState } from "react";
 const Upload = () => {
   return (
     <div>
-      <h1>todo upload</h1>
+      <div className="left-box">
+        <div className="camera-box"></div>
+        <div className="id-box"></div>
+      </div>
+      <div className="right-box"></div>
     </div>
   );
 };
