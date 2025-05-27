@@ -38,23 +38,72 @@ const Upload = () => {
     }
   };
 
-  const processImageWithAI = (imageData) => {
+  const processImageWithAI = async (imageData) => {
     setIsProcessing(true);
     addLog("Sending image to AI for text recognition...");
 
-    setTimeout(() => {
-      const mockResponse = {
-        title: "Shopping List",
-        items: "Milk, Eggs, Bread, Butter",
-        priority: "High",
-        date: "May 26, 2025",
-        notes: "Remember to check expiry dates",
+    try {
+      const apiKey = process.env.REACT_APP_MISTRAL_API_KEY;
+      if(!apiKey){
+        throw new Error("Missing API Key");
+      }
+
+      const payload = {
+        model: "mistral-medium-latest",
+        messages: [
+          {
+            role: "user",
+            content: [
+              {
+                type: "text",
+                text: 
+                  `This image is of a filled-in ballot.
+                  Return a JSON object mapping each category name to an object with its id_letter, vote_id, and reg_id fields.
+                  Use this exact format, and do not include any extra commentary:
+
+                  {
+                    "CATEGORY_NAME": { "id_letter": "A", "vote_id": "123", "reg_id": "12456" },
+                    ...
+                  }
+                  Respond in valid JSON only.`,
+              },
+              {
+                type: "image_url",
+                image_url: imageData,
+              },
+            ],
+          },
+        ],
       };
 
-      setRecognizedText(mockResponse);
+      const response = await fetch(
+        "https://api.mistral.ai/v1/chat/completions",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${apiKey}`,
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.error?.message || "AI service error");
+      }
+
+      let content = result.choices[0].message.content.trim();
+      content = content.replace(/^```json\s*|```$/g, "");
+      const parsed = JSON.parse(content);
+
+      setRecognizedText(parsed);
+      addLog("Text completion completed", "success");
+    } catch (error) {
+      console.error("AI call failed", error);
+      addLog(`Error during text recognition: ${error.message}`, "error");
+    } finally {
       setIsProcessing(false);
-      addLog("Text recognition completed", "success");
-    }, 2000);
+    }
   };
 
   const handleJsonUpdate = (updatedData) => {
