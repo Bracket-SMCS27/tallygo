@@ -3,19 +3,33 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 20px;
 }
 
 .login-form {
-  background: #333;
+  background: linear-gradient(135deg, #333 0%, #222 100%);
   padding: 2.5rem 2rem;
   border-radius: 12px;
-  box-shadow: 0px 0px 32px 5px #005fcc82;
+  box-shadow: 0 8px 30px rgba(0, 95, 204, 0.3);
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
   min-width: 320px;
-  border-color: #3e3e3e;
-  border-style: solid;
+  width: 100%;
+  max-width: 400px;
+  border: 1px solid #444;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-form::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, #0078ff, #00a2ff);
 }
 
 .login-title {
@@ -24,38 +38,62 @@
   margin-top: 0.25rem;
   margin-bottom: 0.5rem;
   font-size: 2rem;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
+  font-weight: 700;
 }
 
 .login-input {
   padding: 0.75rem 1rem;
-  border: none;
+  border: 1px solid #444;
   border-radius: 6px;
   font-size: 1rem;
-  background: #222;
-  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+  background: rgba(34, 34, 34, 0.8);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
   color: #fff;
   outline: none;
-  transition: background 0.2s;
+  transition: all 0.2s;
 }
 
 .login-input:focus {
-  background: #444;
+  background: #2a2a2a;
+  border-color: #0078ff;
+  box-shadow: 0 0 0 2px rgba(0, 120, 255, 0.25);
 }
 
 .login-button {
-  padding: 0.75rem 1rem;
+  padding: 0.8rem 1rem;
   border: none;
   border-radius: 6px;
-  background: #0078ff;
+  background: linear-gradient(to bottom, #0078ff, #0066dd);
   color: #fff;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
   font-size: 1.1rem;
   font-weight: bold;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .login-button:hover {
-  background: #005fcc;
+  background: linear-gradient(to bottom, #0088ff, #0078ff);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+}
+
+.login-button:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 480px) {
+  .login-form {
+    min-width: 0;
+    width: 90%;
+    padding: 2rem 1.5rem;
+  }
+
+  .login-title {
+    font-size: 1.8rem;
+  }
 }

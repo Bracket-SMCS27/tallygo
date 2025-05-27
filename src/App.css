@@ -1,17 +1,21 @@
 #root {
-  margin: 0 0 0 0;
+  margin: 0;
 }
 
 .title-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: rgb(52, 52, 52);
+  background: linear-gradient(135deg, #333 0%, #222 100%);
   padding: 0.75rem;
   margin: 0;
-  border-radius: 2.5px;
-  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  position: relative;
+  border: 1px solid #444;
+  overflow: hidden;
 }
+
 .title-text {
   font-size: 2.5em;
   font-weight: bold;
@@ -19,25 +23,43 @@
   margin-left: 1rem;
   text-align: center;
 }
+
 .status-text {
   font-size: 1.2em;
-  color: #7d7c7c;
+  color: #ccc;
   margin-right: 1rem;
 }
 
-.logout-button {
-  margin-left: 0.5em;
-  padding: 0.5em 0.8em;
-  border-radius: 5px;
-  border: none;
-  background: #0078ff;
-  color: #ededed;
+.logout-text {
+  color: #0078ff;
   cursor: pointer;
-  font-size: 1em;
-  font-weight: 500;
-  transition: background 0.2s;
+  font-weight: 600;
+  transition: all 0.2s;
+  padding: 0.4em 0.8em;
+  border-radius: 4px;
 }
 
-.logout-button:hover {
-  background: #005fcc;
+.logout-text:hover {
+  color: #fff;
+  background-color: #0066dd;
+  text-decoration: none;
+}
+
+@media (max-width: 768px) {
+  .title-text {
+    font-size: 2em;
+    margin-left: 0.5rem;
+  }
+
+  .status-text {
+    font-size: 1em;
+    margin-right: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .title-text {
+    font-size: 1.5em;
+    letter-spacing: 1px;
+  }
 }

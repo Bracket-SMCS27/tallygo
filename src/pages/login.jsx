@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "../App.css";
 import "./login.css";
 
-const Login = () => {
+const Login = ({ onLogin }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -14,6 +14,7 @@ const Login = () => {
     // placeholder for actual authentication logic
     if (username.trim() && password.trim()) {
       localStorage.setItem("tallygo_logged_in", "true");
+      if (onLogin) onLogin();
       navigate("/tallygo/upload");
     }
   };

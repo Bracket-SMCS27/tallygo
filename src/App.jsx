@@ -2,7 +2,12 @@ import React, { useState } from "react";
 import Login from "./pages/login.jsx";
 import Upload from "./pages/upload.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 
 import "./App.css";
 
@@ -14,7 +19,7 @@ function App() {
   const handleLogout = () => {
     localStorage.removeItem("tallygo_logged_in");
     setIsLoggedIn(false);
-    window.location.pathname = "/tallygo/";
+    window.location.href = "/tallygo/";
   };
 
   return (
@@ -23,9 +28,9 @@ function App() {
         <div className="title-text">TALLYGO</div>
         <div className="status-text">
           {isLoggedIn ? (
-            <button className="logout-button" onClick={handleLogout}>
+            <span className="logout-text" onClick={handleLogout}>
               Sign Out
-            </button>
+            </span>
           ) : (
             "Not signed in"
           )}
@@ -45,6 +50,8 @@ function App() {
               </ProtectedRoute>
             }
           />
+          {}
+          <Route path="*" element={<Navigate to="/tallygo/" replace />} />
         </Routes>
       </Router>
     </>
