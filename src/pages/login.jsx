@@ -11,7 +11,34 @@ const Login = ({ onLogin }) => {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    // placeholder for actual authentication logic
+        const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+
+    if (!username || !password) {
+        alert('Please enter both username and password.');
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+
+        if (!response.ok) {
+            throw new Error('Invalid username or password');
+        }
+
+        const data = await response.json();
+        // Assuming the server sends back a token
+        localStorage.setItem('authToken', data.token);
+
+        // Redirect to dashboard or homepage
+        window.location.href = '/dashboard';
+    } catch (error) {
+        alert(error.message);
+    }
     if (username.trim() && password.trim()) {
       localStorage.setItem("tallygo_logged_in", "true");
       if (onLogin) onLogin();
