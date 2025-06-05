@@ -290,6 +290,48 @@ canvas {
   width: 100%;
 }
 
+.submit-button {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 6px;
+  background: linear-gradient(to bottom, #6b5bff, #584cdd);
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.submit-button:hover {
+  background: linear-gradient(to bottom, #7c6dff, #6b5bff);
+  transform: translateY(-2px);
+}
+
+.submit-button:disabled {
+  background: #777;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.submit-status {
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.submit-status.success {
+  background-color: rgba(0, 170, 85, 0.2);
+  border: 1px solid #00aa55;
+  color: #00dd77;
+}
+
+.submit-status.error {
+  background-color: rgba(255, 51, 51, 0.2);
+  border: 1px solid #ff3333;
+  color: #ff6b6b;
+}
+
 @media (max-width: 768px) {
   .upload-container {
     flex-direction: column;

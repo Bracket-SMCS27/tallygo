@@ -106,9 +106,14 @@ const Upload = () => {
     }
   };
 
-  const handleJsonUpdate = (updatedData) => {
+  const handleJsonUpdate = (updatedData, meta) => {
     setRecognizedText(updatedData);
-    addLog("Text data updated successfully", "success");
+    
+    if (meta?.submitted) {
+      addLog("Data successfully submitted to database", "success");
+    } else {
+      addLog("Text data updated successfully", "success");
+    }
   };
 
   return (
