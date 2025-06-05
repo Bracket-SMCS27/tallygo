@@ -80,8 +80,11 @@ const Camera = ({ onCapture }) => {
             />
           </div>
 
-          <div style={{ display: isCaptured ? "block" : "none" }}>
-            <canvas ref={canvasRef} style={{ width: "100%", height: "auto" }} />
+          <div
+            className="camera-display"
+            style={{ display: isCaptured ? "block" : "none" }}
+          >
+            <canvas ref={canvasRef} style={{ width: "100%", objectFit: "contain" }} />
           </div>
 
           <div className="camera-controls">
