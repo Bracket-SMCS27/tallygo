@@ -41,12 +41,28 @@ const Camera = ({ onCapture }) => {
       const canvas = canvasRef.current;
       const context = canvas.getContext("2d");
 
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
+      const maxWidth = 800;
+      const maxHeight = 600;
+      let width = video.videoWidth;
+      let height = video.videoHeight;
 
-      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      if (width > height) {
+        if (width > maxWidth) {
+          height = Math.round((height * maxWidth) / width);
+          width = maxWidth;
+        }
+      } else {
+        if (height > maxHeight) {
+          width = Math.round((width * maxHeight) / height);
+          height = maxHeight;
+        }
+      }
 
-      const imageData = canvas.toDataURL("image/jpeg");
+      canvas.width = width;
+      canvas.height = height;
+      context.drawImage(video, 0, 0, width, height);
+
+      const imageData = canvas.toDataURL("image/jpeg", 0.7);
       setIsCaptured(true);
 
       if (onCapture) {
@@ -84,7 +100,10 @@ const Camera = ({ onCapture }) => {
             className="camera-display"
             style={{ display: isCaptured ? "block" : "none" }}
           >
-            <canvas ref={canvasRef} style={{ width: "100%", objectFit: "contain" }} />
+            <canvas
+              ref={canvasRef}
+              style={{ width: "100%", objectFit: "contain" }}
+            />
           </div>
 
           <div className="camera-controls">
