@@ -43,7 +43,7 @@ const Upload = () => {
     addLog("Sending image to AI for text recognition...");
 
     try {
-      const apiKey = process.env.REACT_APP_MISTRAL_API_KEY;
+      const apiKey = import.meta.env.VITE_APP_MISTRAL_API_KEY;
       if(!apiKey){
         throw new Error("Missing API Key");
       }
