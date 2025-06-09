@@ -9,7 +9,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist",
+    "homepage": "https://bracket-smcs27.github.io/tallygo"
   },
   "dependencies": {
     "geist": "^1.4.2",

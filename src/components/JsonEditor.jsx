@@ -96,7 +96,7 @@ const JsonEditor = ({ data, onUpdate }) => {
 
       submitLog("Sending data to API endpoint");
       const response = await fetch(
-        "https://tallygo-api.vercel.app/api/submit",
+        "https://tallygo-api.vercel.app/api/submit.jsx",
         {
           method: "POST",
           headers: {

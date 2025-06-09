@@ -108,8 +108,8 @@ const Upload = () => {
             content: [
               {
                 type: "text",
-                text: `This image is of a filled-in ballot.
-                  Return a JSON object mapping each category name to an object with its id_letter, vote_id, and reg_id fields.
+                text: `This image is of a filled-in item voting ballot.
+                  Return a JSON object mapping each item category name to a fishing product with its id_letter, vote_id, and reg_id fields.
                   Use this exact format, and do not include any extra commentary:
 
                   {
