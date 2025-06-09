@@ -110,6 +110,7 @@ const Upload = () => {
                 type: "text",
                 text: `This image is of a filled-in item voting ballot.
                   Return a JSON object mapping each item category name to a fishing product with its id_letter, vote_id, and reg_id fields.
+                  The reg_id is written at the top right corner of the ballot. The vote_id is a three digit number. The id_letter is a single letter.
                   Use this exact format, and do not include any extra commentary:
 
                   {
