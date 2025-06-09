@@ -1,24 +1,34 @@
+// src/components/Camera.jsx
 import React, { useRef, useState, useEffect } from "react";
 
 const Camera = ({ onCapture }) => {
-  const videoRef = useRef(null);
-  const canvasRef = useRef(null);
+  const videoRef   = useRef(null);
+  const canvasRef  = useRef(null);
+
   const [stream, setStream] = useState(null);
   const [error, setError] = useState(null);
   const [isCaptured, setIsCaptured] = useState(false);
 
+  const [facingMode, setFacingMode] = useState("user");    // "user" (front) or "environment" (back)
+  const [canFlip, setCanFlip] = useState(false);     // only true if device has >1 camera
+
   useEffect(() => {
+    let activeStream;
+
     async function setupCamera() {
       try {
-        const mediaStream = await navigator.mediaDevices.getUserMedia({
-          video: true,
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const videoInputs = devices.filter(d => d.kind === "videoinput");
+        setCanFlip(videoInputs.length > 1);
+
+        activeStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode },
           audio: false,
         });
-
-        setStream(mediaStream);
+        setStream(activeStream);
 
         if (videoRef.current) {
-          videoRef.current.srcObject = mediaStream;
+          videoRef.current.srcObject = activeStream;
         }
       } catch (err) {
         setError("Camera access denied or not available");
@@ -29,53 +39,36 @@ const Camera = ({ onCapture }) => {
     setupCamera();
 
     return () => {
-      if (stream) {
-        stream.getTracks().forEach((track) => track.stop());
+      if (activeStream) {
+        activeStream.getTracks().forEach(track => track.stop());
       }
     };
-  }, []);
+  }, [facingMode]);  
 
   const captureImage = () => {
-    if (videoRef.current && canvasRef.current) {
-      const video = videoRef.current;
-      const canvas = canvasRef.current;
-      const context = canvas.getContext("2d");
+    if (!videoRef.current || !canvasRef.current) return;
 
-      const maxWidth = 800;
-      const maxHeight = 600;
-      let width = video.videoWidth;
-      let height = video.videoHeight;
+    const video  = videoRef.current;
+    const canvas = canvasRef.current;
+    const ctx    = canvas.getContext("2d");
 
-      if (width > height) {
-        if (width > maxWidth) {
-          height = Math.round((height * maxWidth) / width);
-          width = maxWidth;
-        }
-      } else {
-        if (height > maxHeight) {
-          width = Math.round((width * maxHeight) / height);
-          height = maxHeight;
-        }
-      }
+    canvas.width  = video.videoWidth;
+    canvas.height = video.videoHeight;
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-      canvas.width = width;
-      canvas.height = height;
-      context.drawImage(video, 0, 0, width, height);
-
-      const imageData = canvas.toDataURL("image/jpeg", 0.7);
-      setIsCaptured(true);
-
-      if (onCapture) {
-        onCapture(imageData);
-      }
-    }
+    const imageData = canvas.toDataURL("image/jpeg");
+    setIsCaptured(true);
+    onCapture?.(imageData);
   };
 
   const retakePhoto = () => {
     setIsCaptured(false);
-    if (onCapture) {
-      onCapture(null);
-    }
+    onCapture?.(null);
+  };
+
+  const flipCamera = () => {
+    setFacingMode(fm => (fm === "user" ? "environment" : "user"));
+    setIsCaptured(false);
   };
 
   return (
@@ -84,6 +77,7 @@ const Camera = ({ onCapture }) => {
         <div className="camera-placeholder">{error}</div>
       ) : (
         <>
+          {/* live preview */}
           <div
             className="camera-display"
             style={{ display: isCaptured ? "none" : "block" }}
@@ -92,29 +86,44 @@ const Camera = ({ onCapture }) => {
               ref={videoRef}
               autoPlay
               playsInline
+              muted
               style={{ width: "100%", height: "100%", objectFit: "contain" }}
             />
           </div>
 
+          {/* captured snapshot */}
           <div
             className="camera-display"
             style={{ display: isCaptured ? "block" : "none" }}
           >
             <canvas
               ref={canvasRef}
-              style={{ width: "100%", objectFit: "contain" }}
+              style={{ width: "100%", height: "auto", objectFit: "contain" }}
             />
           </div>
 
+          {/* controls */}
           <div className="camera-controls">
             {!isCaptured ? (
-              <button
-                className="camera-button"
-                onClick={captureImage}
-                disabled={!stream}
-              >
-                Capture Image
-              </button>
+              <>
+                {/* flip if available */}
+                {canFlip && (
+                  <button
+                    className="camera-button"
+                    onClick={flipCamera}
+                    disabled={!stream}
+                  >
+                    Flip Camera
+                  </button>
+                )}
+                <button
+                  className="camera-button"
+                  onClick={captureImage}
+                  disabled={!stream}
+                >
+                  Capture Image
+                </button>
+              </>
             ) : (
               <button className="camera-button" onClick={retakePhoto}>
                 Retake Photo
