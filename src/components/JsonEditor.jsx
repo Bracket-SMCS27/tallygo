@@ -7,7 +7,17 @@ const JsonEditor = ({ data, onUpdate }) => {
   const [submitStatus, setSubmitStatus] = useState(null);
 
   useEffect(() => {
-    setEditableData(data || {});
+    try {
+      if (data && typeof data === "object") {
+        const safeData = JSON.parse(JSON.stringify(data));
+        setEditableData(safeData);
+      } else {
+        setEditableData({});
+      }
+    } catch (error) {
+      console.error("Error setting editor data:", error);
+      setEditableData({});
+    }
   }, [data]);
 
   const handleEdit = () => {
@@ -33,37 +43,106 @@ const JsonEditor = ({ data, onUpdate }) => {
     }));
   };
 
+  const handleNestedChange = (key, nestedKey, value) => {
+    setEditableData((prev) => ({
+      ...prev,
+      [key]: {
+        ...(prev[key] || {}),
+        [nestedKey]: value,
+      },
+    }));
+  };
+
   const handleSubmitToDatabase = async () => {
     setIsSubmitting(true);
     setSubmitStatus(null);
 
-    try {
-      const response = await fetch("https://tallygo-api.vercel.app/api/submit", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          data: editableData,
-          timestamp: new Date().toISOString(),
-          userId: localStorage.getItem("tallygo_user_id") || "anonymous",
-        }),
-      });
+    const submitLog = (message, type = "info") => {
+      const timestamp = new Date().toLocaleTimeString();
+      const newLog = {
+        id: Date.now(),
+        message: `[SUBMIT] ${message}`,
+        type,
+        timestamp,
+      };
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to submit data");
+      try {
+        const storedLogs = sessionStorage.getItem("tallygo_logs");
+        const logs = storedLogs ? JSON.parse(storedLogs) : [];
+
+        logs.unshift(newLog);
+        sessionStorage.setItem(
+          "tallygo_logs",
+          JSON.stringify(logs.slice(0, 50))
+        );
+
+        console.log(`[SUBMIT] ${message}`);
+      } catch (e) {
+        console.warn("Failed to save log to sessionStorage", e);
+      }
+    };
+
+    try {
+      submitLog("Preparing data for submission");
+      const payload = {
+        data: editableData,
+        timestamp: new Date().toISOString(),
+        userId: localStorage.getItem("tallygo_user_id") || "anonymous",
+      };
+
+      submitLog(
+        `Data payload size: ${JSON.stringify(payload).length} characters`
+      );
+
+      submitLog("Sending data to API endpoint");
+      const response = await fetch(
+        "https://tallygo-api.vercel.app/api/submit",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      submitLog(`Response status: ${response.status}`);
+
+      const responseData = await response.text();
+      submitLog(`Response body length: ${responseData.length} characters`);
+
+      let parsedResponse;
+      try {
+        parsedResponse = JSON.parse(responseData);
+        submitLog(
+          `Response parsed successfully: ${JSON.stringify(parsedResponse)}`
+        );
+      } catch (e) {
+        submitLog(`Failed to parse response as JSON: ${e.message}`, "error");
+        submitLog(
+          `Raw response: ${responseData.substring(0, 200)}...`,
+          "error"
+        );
       }
 
+      if (!response.ok) {
+        submitLog(`API returned error status: ${response.status}`, "error");
+        throw new Error(parsedResponse?.message || "Failed to submit data");
+      }
+
+      submitLog("Data submitted successfully", "success");
       setSubmitStatus("success");
       if (onUpdate) {
         onUpdate(editableData, { submitted: true });
       }
     } catch (error) {
+      submitLog(`Submission error: ${error.message}`, "error");
+      submitLog(`Error stack: ${error.stack}`, "error");
       console.error("Database submission failed:", error);
       setSubmitStatus("error");
     } finally {
       setIsSubmitting(false);
+      submitLog("Submission process completed");
     }
   };
 
@@ -119,14 +198,41 @@ const JsonEditor = ({ data, onUpdate }) => {
           <div key={key} className="json-field">
             <div className="field-label">{key}:</div>
             {isEditing ? (
-              <input
-                type="text"
-                value={value}
-                onChange={(e) => handleChange(key, e.target.value)}
-                className="field-input"
-              />
+              typeof value === "object" && value !== null ? (
+                <div className="nested-fields">
+                  {Object.entries(value).map(([nestedKey, nestedValue]) => (
+                    <div key={`${key}-${nestedKey}`} className="nested-field">
+                      <div className="nested-label">{nestedKey}:</div>
+                      <input
+                        type="text"
+                        value={nestedValue || ""}
+                        onChange={(e) =>
+                          handleNestedChange(key, nestedKey, e.target.value)
+                        }
+                        className="field-input"
+                      />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <input
+                  type="text"
+                  value={value || ""}
+                  onChange={(e) => handleChange(key, e.target.value)}
+                  className="field-input"
+                />
+              )
+            ) : typeof value === "object" && value !== null ? (
+              <div className="field-value nested">
+                {Object.entries(value).map(([nestedKey, nestedValue]) => (
+                  <div key={`${key}-${nestedKey}`} className="nested-value">
+                    <span className="nested-key">{nestedKey}:</span>{" "}
+                    {nestedValue || ""}
+                  </div>
+                ))}
+              </div>
             ) : (
-              <div className="field-value">{value}</div>
+              <div className="field-value">{value || ""}</div>
             )}
           </div>
         ))}

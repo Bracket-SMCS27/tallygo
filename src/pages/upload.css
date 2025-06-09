@@ -332,6 +332,38 @@ canvas {
   color: #ff6b6b;
 }
 
+.nested-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.nested-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nested-label {
+  color: #0078ff;
+  min-width: 80px;
+}
+
+.field-value.nested {
+  display: flex;
+  flex-direction: column;
+}
+
+.nested-value {
+  padding: 3px 0;
+}
+
+.nested-key {
+  color: #0078ff;
+  margin-right: 5px;
+}
+
 @media (max-width: 768px) {
   .upload-container {
     flex-direction: column;

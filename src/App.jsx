@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Login from "./pages/login.jsx";
 import Upload from "./pages/upload.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import ErrorBoundary from "./components/ErrorBoundary.jsx";
 import {
   BrowserRouter as Router,
   Routes,
@@ -37,22 +38,23 @@ function App() {
         </div>
       </div>
       <Router>
-        <Routes>
-          <Route
-            path="/tallygo/"
-            element={<Login onLogin={() => setIsLoggedIn(true)} />}
-          />
-          <Route
-            path="/tallygo/upload"
-            element={
-              <ProtectedRoute>
-                <Upload />
-              </ProtectedRoute>
-            }
-          />
-          {}
-          <Route path="*" element={<Navigate to="/tallygo/" replace />} />
-        </Routes>
+        <ErrorBoundary>
+          <Routes>
+            <Route
+              path="/tallygo/"
+              element={<Login onLogin={() => setIsLoggedIn(true)} />}
+            />
+            <Route
+              path="/tallygo/upload"
+              element={
+                <ProtectedRoute>
+                  <Upload />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="*" element={<Navigate to="/tallygo/" replace />} />
+          </Routes>
+        </ErrorBoundary>
       </Router>
     </>
   );
