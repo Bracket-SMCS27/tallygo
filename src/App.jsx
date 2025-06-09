@@ -3,6 +3,7 @@ import Login from "./pages/login.jsx";
 import Upload from "./pages/upload.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import ErrorBoundary from "./components/ErrorBoundary.jsx";
+import Settings from "./components/Settings.jsx";
 import {
   BrowserRouter as Router,
   Routes,
@@ -49,6 +50,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Upload />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/tallygo/settings"
+              element={
+                <ProtectedRoute>
+                  <Settings />
                 </ProtectedRoute>
               }
             />

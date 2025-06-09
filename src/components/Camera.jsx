@@ -46,24 +46,47 @@ const Camera = ({ onCapture }) => {
   }, [facingMode]);  
 
   const captureImage = () => {
-    if (!videoRef.current || !canvasRef.current) return;
+    if (videoRef.current && canvasRef.current){
+      const video = videoRef.current;
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext("2d");
 
-    const video  = videoRef.current;
-    const canvas = canvasRef.current;
-    const ctx    = canvas.getContext("2d");
+      const maxWidth = 800;
+      const maxHeight = 600;
+      let width = video.videoWidth;
+      let height = video.videoHeight;
 
+      if(width > height){
+        if(width > maxWidth){
+          height = Math.round((height*maxWidth)/width);
+          width = maxWidth;
+        }
+      } else {
+        if(height > maxHeight){
+          width = Math.round((width*maxHeight)/height);
+          height = maxHeight;
+        }
+      }
     canvas.width  = video.videoWidth;
     canvas.height = video.videoHeight;
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-    const imageData = canvas.toDataURL("image/jpeg");
+    
+    
+    const imageData = canvas.toDataURL("image/jpeg",0.7);
     setIsCaptured(true);
-    onCapture?.(imageData);
+
+    if(onCapture) {
+      onCapture(imageData); 
+
+    }
   };
+};
 
   const retakePhoto = () => {
     setIsCaptured(false);
-    onCapture?.(null);
+    if (onCapture) {
+      onCapture(null); // Reset captured image
+    }
   };
 
   const flipCamera = () => {
@@ -98,7 +121,7 @@ const Camera = ({ onCapture }) => {
           >
             <canvas
               ref={canvasRef}
-              style={{ width: "100%", height: "auto", objectFit: "contain" }}
+              style={{ width: "100%", objectFit: "contain" }}
             />
           </div>
 

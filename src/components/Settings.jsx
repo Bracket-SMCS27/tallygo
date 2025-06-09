@@ -1,68 +1,72 @@
 import React, { useState } from "react";
-import { ResizableBox } from "react-resizable";
+import { WidthProvider, Responsive } from "react-grid-layout";
 import "react-resizable/css/styles.css";
 import "react-grid-layout/css/styles.css";
 import "./Settings.css";
-
+import Camera from "./Camera";
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 export default function Settings() {
-    const [isCameraFlipped, setCameraFlipped] = useState(false);
-    const [isPanelMinimized, setPanelMinimized] = useState(false);
-
-    const toggleCameraFlip = () => {
-        setCameraFlipped(!isCameraFlipped);
-    };
+    const [capturedImage, setCapturedImage] = useState(null);
+    const [recognizedText, setRecognizedText] = useState(null);
+    const [logs, setLogs] = useState([]);
 
     const onLayoutChange = (newLayout) => {
         console.log("New layout:", newLayout);
     };
+
     const defaultLayouts = {
         lg: [
-            { i: "panel1", x: 0, y: 0, w: 6, h: 4, minW: 2, minH: 2 },
-            { i: "panel1-toggle", x: 6, y: 0, w: 2, h: 1 }
+            { i: "image", x: 0, y: 0, w: 6, h: 6, minW: 2, minH: 2 },
+            { i: "log", x: 6, y: 0, w: 3, h: 6, minW: 2, minH: 2 },
+            { i: "text", x: 9, y: 0, w: 3, h: 6, minW: 2, minH: 2 },
         ]
     };
-    return(
+
+    return (
         <div className="settings-container">
             <h2>Settings</h2>
-
-            <div>
-                <button onClick={toggleCameraFlip}>
-                    {isCameraFlipped ? "Unflip Camera" : "Flip Camera"}
-                </button>
-            </div>
             <ResponsiveGridLayout
                 className="layout"
-                layouts={{defaultLayouts}}
-                breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480}}
+                layouts={defaultLayouts}
+                breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480 }}
                 cols={{ lg: 12, md: 10, sm: 6, xs: 2 }}
-                rowHeight={30}
+                rowHeight={600}
                 onLayoutChange={onLayoutChange}
                 isResizable={true}
                 isDraggable={true}
             >
-                {!isPanelMinimized && (
-                    <div key = "panel1" className="panel">
-                        <ResizableBox 
-                        width={300}
-                        height={200}
-                        minConstraints={[200, 200]}
-                        axis="both">
-                        <div className="panel-content">
-                            Resizable Panel 1
-                        </div>
-                    </ResizableBox>
+                <div key="image" className="panel">
+                    <div className="panel-content">
+                        Image
+                        {/*<Camera onCapture={setCapturedImage} />
+                        {capturedImage && (
+                            <img
+                                src={capturedImage}
+                                alt="Captured"
+                                style={{ width: "100%", marginTop: 8 }}
+                            />
+                        )}*/}
+                    </div>
                 </div>
-            )}
-
-                <div key = "panel1-toggle" className="minimized-panel">
-                    <button onClick={() => setPanelMinimized(!isPanelMinimized)}>
-                        {isPanelMinimized ? "Expand Panel" : "Minimize Panel"}
-                    </button>
+                <div key="log" className="panel">
+                    <div className="panel-content">
+                        <strong>Log Output</strong>
+                        <ul>
+                            {logs.length === 0 && <li>No logs yet.</li>}
+                            {logs.map((log, idx) => (
+                                <li key={idx}>{log}</li>
+                            ))}
+                        </ul>
+                    </div>
+                </div>
+                <div key="text" className="panel">
+                    <div className="panel-content">
+                        <strong>Text Output</strong>
+                        <div>{recognizedText || "No text recognized yet."}</div>
+                    </div>
                 </div>
             </ResponsiveGridLayout>
         </div>
-);
-
+    );
 }

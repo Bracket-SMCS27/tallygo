@@ -1,7 +1,23 @@
 import React, { useState, useEffect } from "react";
 import Camera from "../components/Camera.jsx";
 import JsonEditor from "../components/JsonEditor.jsx";
+import { WidthProvider, Responsive } from "react-grid-layout";
+import "react-resizable/css/styles.css";
+import "react-grid-layout/css/styles.css";
 import "./upload.css";
+
+const ResponsiveGridLayout = WidthProvider(Responsive);
+
+const layouts = {
+  lg: [
+    // Left column: camera (top), json (bottom)
+    { i: "camera", x: 0, y: 0, w: 7, h: 7, minW: 3, minH: 3 },
+    { i: "json",   x: 0, y: 7, w: 7, h: 5, minW: 3, minH: 3 },
+    // Right column: logs (full height)
+    { i: "logs",   x: 7, y: 0, w: 5, h: 12, minW: 2, minH: 6 },
+  ]
+};
+
 
 const Upload = () => {
   const [logs, setLogs] = useState([]);
@@ -230,52 +246,70 @@ const Upload = () => {
     }
   };
 
+
   return (
-    <div className="upload-container">
-      <div className="left-box">
-        <div className="camera-box">
-          <Camera onCapture={handleCapture} />
+    <div className="upload-container" style={{ height: "calc(100vh - 85px)" }}>
+      <ResponsiveGridLayout
+        className="layout"
+        layouts={layouts}
+        breakpoints={{ lg: 1200 }}
+        cols={{ lg: 12 }}
+        rowHeight={60}
+        maxRows={12}
+        isResizable={true}
+        isDraggable={true}
+        compactType={null}
+        margin={[20, 20]}
+        bounds="parent"
+        preventCollision={true}
+      >
+        <div key="camera" className="panel">
+          <div className="panel-content">
+            <Camera onCapture={handleCapture} />
+          </div>
         </div>
-
-        <div className="json-box">
-          {isProcessing ? (
-            <div className="empty-state">
-              <p>Processing image...</p>
-              <p>Please wait while the AI analyzes the text.</p>
-            </div>
-          ) : apiError ? (
-            <div className="empty-state error">
-              <p>Error processing image</p>
-              <p>{apiError}</p>
-              <button
-                className="camera-button"
-                onClick={() => setApiError(null)}
-                style={{ marginTop: "15px" }}
-              >
-                Try Again
-              </button>
-            </div>
-          ) : (
-            <JsonEditor data={recognizedText} onUpdate={handleJsonUpdate} />
-          )}
-        </div>
-      </div>
-
-      <div className="right-box">
-        <h3>System Logs</h3>
-        <div className="logs-container">
-          {logs.length === 0 ? (
-            <div className="log-entry">No logs yet</div>
-          ) : (
-            logs.map((log) => (
-              <div key={log.id} className={`log-entry ${log.type}`}>
-                <span className="log-timestamp">[{log.timestamp}]</span>{" "}
-                {log.message}
+        <div key="json" className="panel">
+          <div className="panel-content">
+            {isProcessing ? (
+              <div className="empty-state">
+                <p>Processing image...</p>
+                <p>Please wait while the AI analyzes the text.</p>
               </div>
-            ))
-          )}
+            ) : apiError ? (
+              <div className="empty-state error">
+                <p>Error processing image</p>
+                <p>{apiError}</p>
+                <button
+                  className="camera-button"
+                  onClick={() => setApiError(null)}
+                  style={{ marginTop: "15px" }}
+                >
+                  Try Again
+                </button>
+              </div>
+            ) : (
+              <JsonEditor data={recognizedText} onUpdate={handleJsonUpdate} />
+            )}
+          </div>
         </div>
-      </div>
+        <div key="logs" className="panel">
+          <div className="panel-content">
+            <h3>System Logs</h3>
+            <div className="logs-container">
+              {logs.length === 0 ? (
+                <div className="log-entry">No logs yet</div>
+              ) : (
+                logs.map((log) => (
+                  <div key={log.id} className={`log-entry ${log.type}`}>
+                    <span className="log-timestamp">[{log.timestamp}]</span>{" "}
+                    {log.message}
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      </ResponsiveGridLayout>
     </div>
   );
 };

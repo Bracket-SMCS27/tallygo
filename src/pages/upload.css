@@ -1,11 +1,97 @@
 .upload-container {
-  display: flex;
-  height: calc(100vh - 85px);
+  height: calc(100vh- 85px);
   padding: 20px;
-  gap: 20px;
+  background: #222;
+  box-sizing: border-box;
   overflow: hidden;
+  position: relative;
+}
+.layout {
+  min-height: 80vh;
+  height: 100%;
+  width: 100%;
+  background: transparent;
+  gap: 20px;
+  position: relative;
+}
+.upload-container .panel {
+  background: linear-gradient(135deg, #232526 0%, #18191a 100%) !important;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 95, 204, 0.15);
+  border: 1px solid #222;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  min-width: 0;
+  color: #f1f1f1;
+}
+.panel {
+  background: linear-gradient(135deg, #232526 0%, #18191a 100%);
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 95, 204, 0.15);
+  border: 1px solid #222;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  min-width: 0;
 }
 
+.panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, #0078ff, #00a2ff);
+  z-index: 2;
+}
+
+/* Panel content area */
+.panel-content {
+  padding: 18px 15px 15px 15px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: auto;
+  color: #f1f1f1;
+}
+
+/* Logs panel tweaks */
+.panel-content .logs-container {
+  height: 100%;
+  overflow-y: auto;
+  margin-top: 5px;
+}
+
+/* Camera and JSON panel tweaks */
+.camera-component,
+.json-editor {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Responsive tweaks for mobile */
+@media (max-width: 900px) {
+  .layout {
+    min-height: 60vh;
+    gap: 10px;
+  }
+  .panel-content {
+    padding: 10px 6px 8px 6px;
+  }
+}
+
+/* Optional: Hide grid layout background lines if you don't want them */
+.react-grid-layout {
+  background: transparent !important;
+}
+/*Old stuff*/
 .left-box {
   flex: 7;
   display: flex;
