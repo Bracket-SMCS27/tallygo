@@ -1,0 +1,121 @@
+.settings-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+  font-family: sans-serif;
+}
+
+.layout {
+  background: #f9f9f9;
+  min-height: 300px;
+  padding: 0.5rem;
+}
+
+.panel {
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.panel-content {
+  padding: 0.75rem;
+  flex: 1;
+}
+
+.minimized-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.minimized-panel button {
+  padding: 0.5rem 1rem;
+  border: none;
+  background: #e0e0e0;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.minimized-panel button:hover {
+  background: #d5d5d5;
+}
+
+.react-resizable-handle {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  bottom: 0;
+  right: 0;
+  cursor: se-resize;
+}
+.react-resizable-handle::after {
+  content: "";
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid #999;
+  border-bottom: 2px solid #999;
+}
+
+.camera-component {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.camera-display {
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.camera-controls {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.camera-button {
+  padding: 0.5rem 1rem;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.camera-button:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+}
+
+@media (max-width: 767px) {
+  .settings-container {
+    padding: 0.5rem;
+  }
+  .camera-controls {
+    flex-direction: column;
+    width: 100%;
+  }
+  .minimized-panel button,
+  .camera-button {
+    width: 100%;
+  }
+}
+
+/* Tablet: two‐column grid */
+@media (min-width: 768px) and (max-width: 991px) {
+  .settings-container {
+    padding: 0.75rem;
+  }
+}
+
+/* Desktop: multi‐column grid */
+@media (min-width: 992px) {
+  .settings-container {
+    padding: 1.5rem;
+  }
+}
