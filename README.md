@@ -1,12 +1,7 @@
-# React + Vite
+# TallyGO
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+In order to build and run this repository on your own computer, you'll need two things: Node.js version 18+ or 20+ and a Mistral API key to facilitate model requests.
 
-Currently, two official plugins are available:
+Once you've cloned the repository and navigated into its root, run `npm install` followed by `npm run dev` to install required packages and build and run the web application to run locally.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+For the AI calls to work, you'll need to create a `.env` file in the root of your project and paste in `VITE_APP_MISTRAL_API_KEY=<api_key_here>` with a working API key in `<api_key_here>`.
