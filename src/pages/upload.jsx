@@ -10,14 +10,26 @@ const ResponsiveGridLayout = WidthProvider(Responsive);
 
 const layouts = {
   lg: [
-    // Left column: camera (top), json (bottom)
     { i: "camera", x: 0, y: 0, w: 7, h: 7, minW: 3, minH: 3 },
     { i: "json",   x: 0, y: 7, w: 7, h: 5, minW: 3, minH: 3 },
-    // Right column: logs (full height)
     { i: "logs",   x: 7, y: 0, w: 5, h: 12, minW: 2, minH: 6 },
-  ]
+  ],
+  md: [
+    { i: "camera", x: 0, y: 0, w: 6, h: 6 },
+    { i: "json",   x: 0, y: 6, w: 6, h: 4 },
+    { i: "logs",   x: 6, y: 0, w: 4, h: 10 },
+  ],
+  sm: [
+    { i: "camera", x: 0, y: 0, w: 6, h: 6 },
+    { i: "json",   x: 0, y: 6, w: 6, h: 4 },
+    { i: "logs",   x: 0, y: 10, w: 6, h: 6 },
+  ],
+  xs: [
+    { i: "camera", x: 0, y: 0, w: 2, h: 4 },
+    { i: "json",   x: 0, y: 4, w: 2, h: 3 },
+    { i: "logs",   x: 0, y: 7, w: 2, h: 4 },
+  ],
 };
-
 
 const Upload = () => {
   const [logs, setLogs] = useState([]);
@@ -253,8 +265,8 @@ const Upload = () => {
       <ResponsiveGridLayout
         className="layout"
         layouts={layouts}
-        breakpoints={{ lg: 1200 }}
-        cols={{ lg: 12 }}
+        breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480 }}
+        cols={{ lg: 12, md: 10, sm: 6, xs: 2 }}
         rowHeight={60}
         maxRows={12}
         isResizable={true}
